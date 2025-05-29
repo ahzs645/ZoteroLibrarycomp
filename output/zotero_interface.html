@@ -1,0 +1,486 @@
+
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Zotero Library Comparison with Website Collection Hierarchy</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    line-height: 1.6;
+                    margin: 0;
+                    padding: 20px;
+                    color: #333;
+                }
+                h1, h2, h3 {
+                    color: #2c3e50;
+                }
+                .container {
+                    max-width: 1200px;
+                    margin: 0 auto;
+                }
+                .card {
+                    background: #fff;
+                    border-radius: 5px;
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+                .visualization {
+                    text-align: center;
+                    margin: 20px 0;
+                }
+                .visualization img {
+                    max-width: 100%;
+                    height: auto;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin: 20px 0;
+                }
+                th, td {
+                    padding: 12px 15px;
+                    text-align: left;
+                    border-bottom: 1px solid #ddd;
+                }
+                th {
+                    background-color: #f2f2f2;
+                }
+                tr:hover {
+                    background-color: #f5f5f5;
+                }
+                .stats {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: space-between;
+                }
+                .stat-card {
+                    flex: 1;
+                    min-width: 200px;
+                    background: #f8f9fa;
+                    padding: 15px;
+                    margin: 10px;
+                    border-radius: 5px;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                }
+                .hierarchy-table {
+                    margin-top: 20px;
+                }
+                .hierarchy-table td.indent {
+                    padding-left: calc(15px * var(--depth));
+                }
+                .hierarchy-table tr.level-0 {
+                    font-weight: bold;
+                    background-color: #f8f9fa;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>Zotero Library Comparison with Website Collection Hierarchy</h1>
+                
+                <div class="card">
+                    <h2>Library Statistics</h2>
+                    <div class="stats">
+                        <div class="stat-card">
+                            <h3>Portal Library</h3>
+                            <p>Total Titles: 1677</p>
+                            <p>Portal-Only Titles: 988</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Search Library</h3>
+                            <p>Total Titles: 765</p>
+                            <p>Search-Only Titles: 76</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Overlap</h3>
+                            <p>Common Titles: 689</p>
+                            <p>Portal Overlap: 41.09%</p>
+                            <p>Search Overlap: 90.07%</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Library Overlap Visualization</h2>
+                    <div class="visualization">
+                        <img src="library_overlap.png" alt="Library Overlap Venn Diagram">
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Collection Distribution</h2>
+                    <p>This chart shows the top collections by item count across both libraries:</p>
+                    <div class="visualization">
+                        <img src="collection_distribution.png" alt="Collection Distribution">
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Website Collection Hierarchy</h2>
+                    <p>This visualization shows the hierarchical structure of collections as displayed on the Zotero website:</p>
+                    <div class="visualization">
+                        <img src="website_hierarchy.png" alt="Website Collection Hierarchy">
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Collection Overlap Analysis</h2>
+                    <p>This heatmap shows the percentage of items from Portal collections that overlap with Search collections:</p>
+                    <div class="visualization">
+                        <img src="collection_overlap_heatmap.png" alt="Collection Overlap Heatmap">
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Document Types Distribution</h2>
+                    <div class="visualization">
+                        <img src="document_types.png" alt="Document Types Distribution">
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Potential Collection Gaps</h2>
+                    <p>These collections have the lowest overlap percentage, suggesting potential gaps in coverage:</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Library</th>
+                                <th>Collection Path</th>
+                                <th>Total Items</th>
+                                <th>Overlapping Items</th>
+                                <th>Overlap %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+        
+                            <tr>
+                                <td>Portal</td>
+                                <td>1. Data Sources</td>
+                                <td>6</td>
+                                <td>0</td>
+                                <td>0.0%</td>
+                            </tr>
+            
+                            <tr>
+                                <td>Portal</td>
+                                <td>2. Team Work Folder</td>
+                                <td>7</td>
+                                <td>0</td>
+                                <td>0.0%</td>
+                            </tr>
+            
+                            <tr>
+                                <td>Portal</td>
+                                <td>Isla</td>
+                                <td>13</td>
+                                <td>0</td>
+                                <td>0.0%</td>
+                            </tr>
+            
+                            <tr>
+                                <td>Portal</td>
+                                <td>Margot</td>
+                                <td>9</td>
+                                <td>0</td>
+                                <td>0.0%</td>
+                            </tr>
+            
+                            <tr>
+                                <td>Portal</td>
+                                <td>Portal Resources</td>
+                                <td>40</td>
+                                <td>0</td>
+                                <td>0.0%</td>
+                            </tr>
+            
+                            <tr>
+                                <td>Portal</td>
+                                <td>Resources for Import (Lisa)</td>
+                                <td>8</td>
+                                <td>0</td>
+                                <td>0.0%</td>
+                            </tr>
+            
+                            <tr>
+                                <td>Portal</td>
+                                <td>Books</td>
+                                <td>71</td>
+                                <td>1</td>
+                                <td>1.41%</td>
+                            </tr>
+            
+                            <tr>
+                                <td>Portal</td>
+                                <td>IWRG paper</td>
+                                <td>31</td>
+                                <td>2</td>
+                                <td>6.45%</td>
+                            </tr>
+            
+                            <tr>
+                                <td>Portal</td>
+                                <td>Large Lakes Monitoring</td>
+                                <td>136</td>
+                                <td>13</td>
+                                <td>9.56%</td>
+                            </tr>
+            
+                            <tr>
+                                <td>Portal</td>
+                                <td>Nechako Archives</td>
+                                <td>590</td>
+                                <td>64</td>
+                                <td>10.85%</td>
+                            </tr>
+            
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="card">
+                    <h2>Portal Library Collection Hierarchy with Statistics</h2>
+                    <table class="hierarchy-table">
+                        <thead>
+                            <tr>
+                                <th>Collection</th>
+                                <th>Total Items</th>
+                                <th>Overlapping Items</th>
+                                <th>Overlap %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+        
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">1. Data Sources</td>
+                                <td>6</td>
+                                <td>0</td>
+                                <td>0.0%</td>
+                            </tr>
+            
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">2. Team Work Folder</td>
+                                <td>7</td>
+                                <td>0</td>
+                                <td>0.0%</td>
+                            </tr>
+            
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">3. Resources for Import</td>
+                                <td>6</td>
+                                <td>1</td>
+                                <td>16.67%</td>
+                            </tr>
+            
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">4. Uploaded Resources (in the Nechako Portal)</td>
+                                <td>307</td>
+                                <td>79</td>
+                                <td>25.73%</td>
+                            </tr>
+            
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">Books</td>
+                                <td>71</td>
+                                <td>1</td>
+                                <td>1.41%</td>
+                            </tr>
+            
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">IWRG paper</td>
+                                <td>31</td>
+                                <td>2</td>
+                                <td>6.45%</td>
+                            </tr>
+            
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">Isla</td>
+                                <td>13</td>
+                                <td>0</td>
+                                <td>0.0%</td>
+                            </tr>
+            
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">Jonathan</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>0.0%</td>
+                            </tr>
+            
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">Large Lakes Monitoring</td>
+                                <td>136</td>
+                                <td>13</td>
+                                <td>9.56%</td>
+                            </tr>
+            
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">MP-JD Saturation Search (Journals only)</td>
+                                <td>338</td>
+                                <td>107</td>
+                                <td>31.66%</td>
+                            </tr>
+            
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">Margot</td>
+                                <td>9</td>
+                                <td>0</td>
+                                <td>0.0%</td>
+                            </tr>
+            
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">Movies</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>0.0%</td>
+                            </tr>
+            
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">Nechako Archives</td>
+                                <td>590</td>
+                                <td>64</td>
+                                <td>10.85%</td>
+                            </tr>
+            
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">Nechako Lit Review Master List</td>
+                                <td>312</td>
+                                <td>82</td>
+                                <td>26.28%</td>
+                            </tr>
+            
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">Portal Resources</td>
+                                <td>40</td>
+                                <td>0</td>
+                                <td>0.0%</td>
+                            </tr>
+            
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">Reports</td>
+                                <td>4</td>
+                                <td>1</td>
+                                <td>25.0%</td>
+                            </tr>
+            
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">Resources for Import (Christiana)</td>
+                                <td>62</td>
+                                <td>21</td>
+                                <td>33.87%</td>
+                            </tr>
+            
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">Resources for Import (Jonathan)</td>
+                                <td>68</td>
+                                <td>28</td>
+                                <td>41.18%</td>
+                            </tr>
+            
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">Resources for Import (Lisa)</td>
+                                <td>8</td>
+                                <td>0</td>
+                                <td>0.0%</td>
+                            </tr>
+            
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">Sample 1 (Jan 10th, 2022)</td>
+                                <td>71</td>
+                                <td>29</td>
+                                <td>40.85%</td>
+                            </tr>
+            
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">Scott</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>0.0%</td>
+                            </tr>
+            
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">Subsurface papers</td>
+                                <td>24</td>
+                                <td>6</td>
+                                <td>25.0%</td>
+                            </tr>
+            
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">Websites</td>
+                                <td>2</td>
+                                <td>0</td>
+                                <td>0.0%</td>
+                            </tr>
+            
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="card">
+                    <h2>Search Library Collection Hierarchy with Statistics</h2>
+                    <table class="hierarchy-table">
+                        <thead>
+                            <tr>
+                                <th>Collection</th>
+                                <th>Total Items</th>
+                                <th>Overlapping Items</th>
+                                <th>Overlap %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+        
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">Books and Book chapters</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>0.0%</td>
+                            </tr>
+            
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">Journal Articles</td>
+                                <td>531</td>
+                                <td>381</td>
+                                <td>71.75%</td>
+                            </tr>
+            
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">Other non-journal sources</td>
+                                <td>59</td>
+                                <td>34</td>
+                                <td>57.63%</td>
+                            </tr>
+            
+                            <tr class="level-0">
+                                <td class="indent" style="--depth: 0">Subsearch AH</td>
+                                <td>32</td>
+                                <td>23</td>
+                                <td>71.88%</td>
+                            </tr>
+            
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="card">
+                    <h2>Data Export</h2>
+                    <p>The following files have been generated:</p>
+                    <ul>
+                        <li><a href="matched_records.csv" download>Matched Records (CSV)</a></li>
+                        <li><a href="collection_analysis.csv" download>Collection Analysis (CSV)</a></li>
+                        <li><a href="gap_analysis.csv" download>Gap Analysis (CSV)</a></li>
+                        <li><a href="title_collections.csv" download>Title-Collections Mapping (CSV)</a></li>
+                        <li><a href="website_hierarchy.csv" download>Website Collection Hierarchy (CSV)</a></li>
+                        <li><a href="analysis_results.json" download>Analysis Results (JSON)</a></li>
+                        <li><a href="library_overlap.png" download>Library Overlap Visualization (PNG)</a></li>
+                        <li><a href="document_types.png" download>Document Types Distribution (PNG)</a></li>
+                        <li><a href="collection_distribution.png" download>Collection Distribution (PNG)</a></li>
+                        <li><a href="website_hierarchy.png" download>Website Collection Hierarchy (PNG)</a></li>
+                        <li><a href="collection_overlap_heatmap.png" download>Collection Overlap Heatmap (PNG)</a></li>
+                    </ul>
+                </div>
+            </div>
+        </body>
+        </html>
+        
