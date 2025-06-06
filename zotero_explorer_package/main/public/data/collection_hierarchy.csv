@@ -1,0 +1,36 @@
+library,collection_id,title,parent_id,path,depth
+Portal,#collection_18,1. Data Sources,,1. Data Sources,0
+Portal,#collection_19,2. Team Work Folder,,2. Team Work Folder,0
+Portal,#collection_21,3. Resources for Import,,3. Resources for Import,0
+Portal,#collection_27,4. Uploaded Resources (in the Nechako Portal),,4. Uploaded Resources (in the Nechako Portal),0
+Portal,#collection_31,Barry's Collection,,Barry's Collection,0
+Portal,#collection_25,Books,,Books,0
+Portal,#collection_38,Cheslatta,,Cheslatta,0
+Portal,#collection_42,Christiana,,Christiana,0
+Portal,#collection_46,Climate Hope/Restoration resources for Import (Makayla),,Climate Hope/Restoration resources for Import (Makayla),1
+Portal,#collection_37,EDI,,EDI,0
+Portal,#collection_26,IWRG paper,,IWRG paper,0
+Portal,#collection_33,Isla,,Isla,0
+Portal,#collection_43,Jonathan,,Jonathan,0
+Portal,#collection_32,Large Lakes Monitoring,,Large Lakes Monitoring,0
+Portal,#collection_41,Lisa,,Lisa,0
+Portal,#collection_35,MP-JD Saturation Search (Journals only),,MP-JD Saturation Search (Journals only),0
+Portal,#collection_36,Margot,,Margot,0
+Portal,#collection_23,Movies,,Movies,0
+Portal,#collection_39,NWR,,NWR,0
+Portal,#collection_29,Nechako Archives,,Nechako Archives,0
+Portal,#collection_20,Nechako Lit Review Master List,,Nechako Lit Review Master List,0
+Portal,#collection_30,Portal Resources,,Portal Resources,0
+Portal,#collection_24,Reports,,Reports,0
+Portal,#collection_44,Resources for Import (Christiana),,Resources for Import (Christiana),0
+Portal,#collection_45,Resources for Import (Jonathan),,Resources for Import (Jonathan),0
+Portal,#collection_47,Resources for Import (Lisa),,Resources for Import (Lisa),0
+Portal,#collection_48,"Sample 1 (Jan 10th, 2022)",,"Sample 1 (Jan 10th, 2022)",0
+Portal,#collection_34,Saturation Search,,Saturation Search,0
+Portal,#collection_40,Scott,,Scott,0
+Portal,#collection_28,Subsurface papers,,Subsurface papers,0
+Portal,#collection_22,Websites,,Websites,0
+Search,#collection_75,Books and Book chapters,,Books and Book chapters,0
+Search,#collection_77,Journal Articles,,Journal Articles,0
+Search,#collection_76,Other non-journal sources,,Other non-journal sources,0
+Search,#collection_74,Subsearch AH,,Subsearch AH,0

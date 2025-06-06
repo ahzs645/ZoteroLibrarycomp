@@ -1,0 +1,28 @@
+library,collection_path,collection_title,collection_depth,total_items,overlap_items,overlap_percentage
+Portal,1. Data Sources,1. Data Sources,0,6,0,0.0
+Portal,2. Team Work Folder,2. Team Work Folder,0,7,0,0.0
+Portal,3. Resources for Import,3. Resources for Import,0,6,1,16.67
+Portal,4. Uploaded Resources (in the Nechako Portal),4. Uploaded Resources (in the Nechako Portal),0,307,79,25.73
+Portal,Books,Books,0,71,1,1.41
+Portal,IWRG paper,IWRG paper,0,31,2,6.45
+Portal,Isla,Isla,0,13,0,0.0
+Portal,Jonathan,Jonathan,0,1,0,0.0
+Portal,Large Lakes Monitoring,Large Lakes Monitoring,0,136,13,9.56
+Portal,MP-JD Saturation Search (Journals only),MP-JD Saturation Search (Journals only),0,338,107,31.66
+Portal,Margot,Margot,0,9,0,0.0
+Portal,Movies,Movies,0,1,0,0.0
+Portal,Nechako Archives,Nechako Archives,0,590,64,10.85
+Portal,Nechako Lit Review Master List,Nechako Lit Review Master List,0,312,82,26.28
+Portal,Portal Resources,Portal Resources,0,40,0,0.0
+Portal,Reports,Reports,0,4,1,25.0
+Portal,Resources for Import (Christiana),Resources for Import (Christiana),0,62,21,33.87
+Portal,Resources for Import (Jonathan),Resources for Import (Jonathan),0,68,28,41.18
+Portal,Resources for Import (Lisa),Resources for Import (Lisa),0,8,0,0.0
+Portal,"Sample 1 (Jan 10th, 2022)","Sample 1 (Jan 10th, 2022)",0,71,29,40.85
+Portal,Scott,Scott,0,1,0,0.0
+Portal,Subsurface papers,Subsurface papers,0,24,6,25.0
+Portal,Websites,Websites,0,2,0,0.0
+Search,Books and Book chapters,Books and Book chapters,0,1,0,0.0
+Search,Journal Articles,Journal Articles,0,531,381,71.75
+Search,Other non-journal sources,Other non-journal sources,0,59,34,57.63
+Search,Subsearch AH,Subsearch AH,0,32,23,71.88
