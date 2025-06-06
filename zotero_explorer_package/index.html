@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Zotero Library Explorer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1400px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            padding: 0;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 20px 20px 0 0;
+        }
+        
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            border: none;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-header {
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border-bottom: 1px solid #dee2e6;
+            font-weight: 600;
+            padding: 20px;
+        }
+        
+        .breadcrumb {
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: none;
+        }
+        
+        .breadcrumb-item {
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .breadcrumb-item:hover:not(.active) {
+            color: #667eea;
+        }
+        
+        #venn-diagram {
+            height: 450px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+        
+        .venn-circle {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            stroke-width: 3;
+        }
+        
+        .venn-circle:hover {
+            opacity: 0.9;
+            stroke-width: 4;
+        }
+        
+        .venn-circle.selected {
+            stroke-width: 5;
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
+        }
+        
+        .venn-label {
+            font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+        }
+        
+        .article-list {
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+        }
+        
+        .article-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f1f1f1;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 2px;
+            border-radius: 8px;
+        }
+        
+        .article-item:hover {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transform: translateX(8px) scale(1.02);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .article-item:hover .article-title {
+            color: white;
+        }
+        
+        .article-item:hover .article-meta {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .article-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #2c3e50;
+            font-size: 0.95em;
+        }
+        
+        .article-meta {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .collection-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f1f1f1;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 2px;
+            border-radius: 8px;
+        }
+        
+        .collection-item:hover {
+            background: linear-gradient(45deg, #764ba2, #667eea);
+            color: white;
+            transform: translateX(8px) scale(1.02);
+            box-shadow: 0 4px 15px rgba(118, 75, 162, 0.3);
+        }
+        
+        .collection-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 3px;
+        }
+        
+        .collection-count {
+            font-size: 0.85rem;
+            color: #666;
+        }
+        
+        .collection-item:hover .collection-name,
+        .collection-item:hover .collection-count {
+            color: white;
+        }
+        
+        .section-info {
+            background: linear-gradient(45deg, #e3f2fd, #f3e5f5);
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 12px 25px rgba(102, 126, 234, 0.2);
+            border: 2px solid #667eea;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .loading {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 300px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .bubble {
+            cursor: pointer;
+            stroke: white;
+            stroke-width: 2;
+            transition: all 0.3s ease;
+        }
+        
+        .bubble:hover {
+            stroke-width: 4;
+            filter: brightness(1.1);
+        }
+        
+        .bubble-label {
+            font-size: 11px;
+            font-weight: 600;
+            pointer-events: none;
+            text-anchor: middle;
+            fill: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+        }
+        
+        .hierarchy-level {
+            margin-left: 20px;
+            border-left: 2px solid #e9ecef;
+            padding-left: 15px;
+        }
+        
+        .hierarchy-toggle {
+            cursor: pointer;
+            color: #667eea;
+            margin-right: 10px;
+        }
+        
+        .data-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            padding: 10px 15px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            font-weight: 500;
+            max-width: 300px;
+            word-wrap: break-word;
+        }
+        
+        .status-loading {
+            background: #ff9500;
+            color: white;
+        }
+        
+        .status-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .status-error {
+            background: #dc3545;
+            color: white;
+        }
+        
+        code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9em;
+            color: #e83e8c;
+        }
+        
+        .alert {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .alert h4 {
+            margin-bottom: 15px;
+        }
+        
+        .alert ul {
+            margin-bottom: 0;
+        }
+        
+        .alert li {
+            margin-bottom: 5px;
+        }
+        
+        .highlight-portal { color: #667eea; font-weight: bold; }
+        .highlight-search { color: #764ba2; font-weight: bold; }
+        .highlight-overlap { color: #28a745; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <!-- Data loading status -->
+    <div id="data-status" class="data-status status-loading">
+        <i class="bi bi-hourglass-split"></i> Loading real data...
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <h1><i class="bi bi-diagram-3"></i> Real Zotero Library Explorer</h1>
+            <p class="lead mb-0">Loading and exploring your actual Zotero data with full hierarchy support</p>
+        </div>
+
+        <div class="px-4 pb-4">
+            <div id="loading" class="loading">
+                <div class="spinner-border text-primary mb-3" role="status"></div>
+                <p>Loading your real Zotero data...</p>
+                <small class="text-muted">Please ensure your data files are in the /data/ folder</small>
+            </div>
+            
+            <div id="main-content" style="display: none;">
+                <!-- Breadcrumb Navigation -->
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb" id="navigation-breadcrumb">
+                        <li class="breadcrumb-item active">
+                            <i class="bi bi-house"></i> Library Overview
+                        </li>
+                    </ol>
+                </nav>
+                
+                <!-- Current Selection Info -->
+                <div id="selection-info" class="section-info" style="display: none;">
+                    <h5 id="selection-title"></h5>
+                    <p id="selection-description" class="mb-0"></p>
+                </div>
+                
+                <!-- Main Content Area -->
+                <div class="row">
+                    <!-- Left Column: Visualization -->
+                    <div class="col-lg-7">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="bi bi-diagram-3"></i> <span id="viz-title">Library Overlap Visualization</span>
+                                <div class="float-end">
+                                    <button id="reset-view" class="btn btn-sm btn-outline-primary" style="display: none;">
+                                        <i class="bi bi-arrow-left"></i> Back to Overview
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <!-- Venn Diagram View -->
+                                <div id="venn-view">
+                                    <div id="venn-diagram"></div>
+                                    <div class="text-center mt-3">
+                                        <small class="text-muted">
+                                            <i class="bi bi-cursor"></i> Click any section to see all articles and explore hierarchy
+                                        </small>
+                                    </div>
+                                </div>
+                                
+                                <!-- Bubble Chart View -->
+                                <div id="bubble-view" style="display: none;">
+                                    <div id="bubble-chart" style="height: 400px;"></div>
+                                    <div class="text-center mt-3">
+                                        <small class="text-muted">
+                                            <i class="bi bi-cursor"></i> Click bubbles to drill down into collection hierarchy
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Statistics -->
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="bi bi-bar-chart"></i> Real Data Statistics
+                            </div>
+                            <div class="card-body">
+                                <div class="stats-grid" id="stats-grid">
+                                    <!-- Populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column: Dynamic Content -->
+                    <div class="col-lg-5">
+                        <!-- Collection Hierarchy Panel -->
+                        <div id="hierarchy-panel" class="card">
+                            <div class="card-header">
+                                <i class="bi bi-folder-open"></i> <span id="hierarchy-title">Collection Hierarchy</span>
+                            </div>
+                            <div class="card-body">
+                                <div id="hierarchy-content">
+                                    <div class="empty-state">
+                                        <i class="bi bi-arrow-left" style="font-size: 2em; opacity: 0.3;"></i>
+                                        <p class="mt-3">Select a library section to explore collections</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Articles Panel -->
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-list"></i> <span id="content-title">Articles</span></span>
+                                <div class="input-group" style="width: 200px;">
+                                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                    <input type="text" id="search-input" class="form-control form-control-sm" placeholder="Search...">
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div id="dynamic-content">
+                                    <div class="empty-state">
+                                        <i class="bi bi-file-earmark-text" style="font-size: 2em; opacity: 0.3;"></i>
+                                        <p class="mt-3">Select a section or collection to view articles</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Article Detail Modal -->
+                <div class="modal fade" id="article-modal" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title"><i class="bi bi-file-text"></i> Article Details</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body" id="article-modal-content">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+        // Real data loading and processing
+        class ZoteroDataLoader {
+            constructor() {
+                this.data = {
+                    analysisResults: null,
+                    websiteHierarchy: [],
+                    collectionAnalysis: [],
+                    titleCollections: [],
+                    matchedRecords: [],
+                    collectionHierarchy: []
+                };
+                this.processedData = {
+                    statistics: {},
+                    collections: {},
+                    articles: {
+                        portal_only: [],
+                        search_only: [],
+                        overlap: []
+                    },
+                    hierarchy: {}
+                };
+            }
+
+            async loadData() {
+                try {
+                    this.updateStatus('Loading data files...', 'loading');
+                    console.log('Starting data load...');
+                    
+                    // Check if we're running from file:// protocol
+                    if (window.location.protocol === 'file:') {
+                        throw new Error('Cannot load data from file:// protocol. Please serve from a web server.');
+                    }
+                    
+                    // Load all data files with detailed error reporting
+                    const filePromises = [
+                        this.loadJSON('data/analysis_results.json').catch(e => { throw new Error(`analysis_results.json: ${e.message}`); }),
+                        this.loadCSV('data/website_hierarchy.csv').catch(e => { throw new Error(`website_hierarchy.csv: ${e.message}`); }),
+                        this.loadCSV('data/collection_analysis.csv').catch(e => { throw new Error(`collection_analysis.csv: ${e.message}`); }),
+                        this.loadCSV('data/title_collections.csv').catch(e => { throw new Error(`title_collections.csv: ${e.message}`); }),
+                        this.loadCSV('data/matched_records.csv').catch(e => { throw new Error(`matched_records.csv: ${e.message}`); })
+                    ];
+                    
+                    console.log('Loading files:', [
+                        'data/analysis_results.json',
+                        'data/website_hierarchy.csv', 
+                        'data/collection_analysis.csv',
+                        'data/title_collections.csv',
+                        'data/matched_records.csv'
+                    ]);
+
+                    const [analysisResults, websiteHierarchy, collectionAnalysis, titleCollections, matchedRecords] = await Promise.all(filePromises);
+
+                    this.data = {
+                        analysisResults,
+                        websiteHierarchy,
+                        collectionAnalysis,
+                        titleCollections,
+                        matchedRecords
+                    };
+
+                    console.log('Files loaded successfully:', {
+                        analysis: !!analysisResults,
+                        hierarchy: websiteHierarchy.length,
+                        collections: collectionAnalysis.length,
+                        titles: titleCollections.length,
+                        records: matchedRecords.length
+                    });
+
+                    this.updateStatus('Processing data...', 'loading');
+                    this.processData();
+                    this.updateStatus('Data loaded successfully!', 'success');
+                    
+                    return this.processedData;
+                } catch (error) {
+                    console.error('Error loading data:', error);
+                    
+                    // Show detailed error information
+                    this.updateStatus(`Error: ${error.message}`, 'error');
+                    this.showDataError(error);
+                    
+                    return this.createFallbackData();
+                }
+            }
+
+            async loadJSON(url) {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Failed to load ${url}`);
+                return await response.json();
+            }
+
+            async loadCSV(url) {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Failed to load ${url}`);
+                const text = await response.text();
+                return this.parseCSV(text);
+            }
+
+            parseCSV(text) {
+                const lines = text.split('\n').filter(line => line.trim());
+                if (lines.length === 0) return [];
+                
+                const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+                return lines.slice(1).map(line => {
+                    const values = this.parseCSVLine(line);
+                    const row = {};
+                    headers.forEach((header, index) => {
+                        row[header] = values[index] || '';
+                    });
+                    return row;
+                });
+            }
+
+            parseCSVLine(line) {
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+                
+                for (let i = 0; i < line.length; i++) {
+                    const char = line[i];
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        values.push(current.trim().replace(/^"|"$/g, ''));
+                        current = '';
+                    } else {
+                        current += char;
+                    }
+                }
+                values.push(current.trim().replace(/^"|"$/g, ''));
+                return values;
+            }
+
+            processData() {
+                // Process statistics
+                this.processedData.statistics = this.data.analysisResults;
+
+                // Process articles by section
+                this.processArticles();
+
+                // Process collection hierarchy
+                this.processCollectionHierarchy();
+
+                // Process collections
+                this.processCollections();
+            }
+
+            processArticles() {
+                this.processedData.articles = {
+                    portal_only: [],
+                    search_only: [],
+                    overlap: []
+                };
+
+                // Process title collections to categorize articles
+                this.data.titleCollections.forEach(row => {
+                    if (!row.title) return;
+
+                    const article = {
+                        title: row.title,
+                        normalized_title: row.normalized_title,
+                        portal_collections: row.portal_collections || '',
+                        search_collections: row.search_collections || '',
+                        is_overlap: row.is_overlap === 'True' || row.is_overlap === true
+                    };
+
+                    // Find additional details from matched records
+                    const matchedRecord = this.data.matchedRecords.find(r => 
+                        r.normalized_title === row.normalized_title || r.title === row.title
+                    );
+
+                    if (matchedRecord) {
+                        article.authors = matchedRecord.authors || 'Unknown';
+                        article.year = matchedRecord.year || 'Unknown';
+                        article.type = matchedRecord.type || 'Article';
+                        article.journal = matchedRecord.journal || '';
+                        article.library = matchedRecord.library || '';
+                    } else {
+                        article.authors = 'Unknown';
+                        article.year = 'Unknown';
+                        article.type = 'Article';
+                        article.library = '';
+                    }
+
+                    // Categorize article
+                    if (article.is_overlap) {
+                        this.processedData.articles.overlap.push(article);
+                    } else if (article.portal_collections && !article.search_collections) {
+                        this.processedData.articles.portal_only.push(article);
+                    } else if (!article.portal_collections && article.search_collections) {
+                        this.processedData.articles.search_only.push(article);
+                    }
+                });
+
+                console.log('Processed articles:', {
+                    portal_only: this.processedData.articles.portal_only.length,
+                    search_only: this.processedData.articles.search_only.length,
+                    overlap: this.processedData.articles.overlap.length
+                });
+            }
+
+            processCollectionHierarchy() {
+                // Build hierarchy from website_hierarchy.csv
+                this.processedData.hierarchy = {};
+                
+                this.data.websiteHierarchy.forEach(row => {
+                    const collection = {
+                        id: row.collection_id,
+                        title: row.title,
+                        path: row.path,
+                        depth: parseInt(row.depth) || 0,
+                        parent_id: row.parent_id || null,
+                        parent_path: row.parent_path || '',
+                        children: [],
+                        articles: []
+                    };
+
+                    // Find articles in this collection
+                    this.data.titleCollections.forEach(titleRow => {
+                        if (titleRow.portal_collections && titleRow.portal_collections.includes(collection.title) ||
+                            titleRow.search_collections && titleRow.search_collections.includes(collection.title)) {
+                            collection.articles.push(titleRow.title);
+                        }
+                    });
+
+                    this.processedData.hierarchy[collection.id] = collection;
+                });
+
+                // Build parent-child relationships
+                Object.values(this.processedData.hierarchy).forEach(collection => {
+                    if (collection.parent_id && this.processedData.hierarchy[collection.parent_id]) {
+                        this.processedData.hierarchy[collection.parent_id].children.push(collection.id);
+                    }
+                });
+            }
+
+            processCollections() {
+                this.processedData.collections = {
+                    portal: [],
+                    search: []
+                };
+
+                // Process collection analysis
+                this.data.collectionAnalysis.forEach(row => {
+                    const collection = {
+                        id: row.collection_path ? row.collection_path.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase() : '',
+                        name: row.collection_title,
+                        path: row.collection_path,
+                        count: parseInt(row.total_items) || 0,
+                        overlap: parseInt(row.overlap_items) || 0,
+                        percentage: parseFloat(row.overlap_percentage) || 0,
+                        depth: parseInt(row.collection_depth) || 0,
+                        library: row.library
+                    };
+
+                    if (collection.library === 'Portal') {
+                        this.processedData.collections.portal.push(collection);
+                    } else if (collection.library === 'Search') {
+                        this.processedData.collections.search.push(collection);
+                    }
+                });
+            }
+
+            createFallbackData() {
+                console.log('Creating fallback data for demo purposes');
+                return {
+                    statistics: {
+                        portal_total: 1677,
+                        search_total: 765,
+                        overlap: 689,
+                        portal_only: 988,
+                        search_only: 76
+                    },
+                    articles: {
+                        portal_only: [
+                            {title: "Climate Change Impact on Water Resources in Northern BC", authors: "Smith, J.; Johnson, A.", year: 2020, type: "Journal Article", portal_collections: "Environmental Studies", search_collections: "", is_overlap: false},
+                            {title: "Sustainable Agriculture Practices in Sub-Boreal Ecosystems", authors: "Brown, R.; Davis, M.", year: 2019, type: "Journal Article", portal_collections: "Agriculture Research", search_collections: "", is_overlap: false},
+                            {title: "Indigenous Water Management Practices in Northern Territories", authors: "Cardinal, M.; Bear, J.", year: 2021, type: "Book Chapter", portal_collections: "Indigenous Knowledge", search_collections: "", is_overlap: false},
+                            {title: "Hydrological Modeling Techniques for Northern Watersheds", authors: "Thompson, K.; Lee, S.", year: 2020, type: "Journal Article", portal_collections: "Hydrology", search_collections: "", is_overlap: false},
+                            {title: "Forest Fire Management in Boreal Ecosystems", authors: "Wilson, T.; Miller, S.", year: 2018, type: "Report", portal_collections: "Forest Management", search_collections: "", is_overlap: false}
+                        ],
+                        search_only: [
+                            {title: "Advanced Research Methodologies in Environmental Science", authors: "Garcia, C.; Martinez, L.", year: 2020, type: "Journal Article", portal_collections: "", search_collections: "Research Methods", is_overlap: false},
+                            {title: "Collaborative Research Models for Northern Communities", authors: "Johnson, R.; White, S.", year: 2021, type: "Book", portal_collections: "", search_collections: "Research Collaboration", is_overlap: false},
+                            {title: "Data Analysis Techniques for Environmental Studies", authors: "Chen, X.; Williams, D.", year: 2019, type: "Journal Article", portal_collections: "", search_collections: "Data Analysis", is_overlap: false}
+                        ],
+                        overlap: [
+                            {title: "The Effect of Variable-Retention Riparian Buffer Zones on Water Temperature", authors: "Robinson, F.; White, G.", year: 2020, type: "Journal Article", portal_collections: "Water Management", search_collections: "Environmental Studies", is_overlap: true},
+                            {title: "Hydrological Modeling of the Nechako Basin Using Advanced Techniques", authors: "Harris, J.; Clark, R.", year: 2021, type: "Journal Article", portal_collections: "Nechako Studies", search_collections: "Modeling", is_overlap: true},
+                            {title: "Fisheries Management in Northern British Columbia", authors: "Lewis, M.; Walker, B.", year: 2019, type: "Journal Article", portal_collections: "Fisheries", search_collections: "Wildlife Management", is_overlap: true},
+                            {title: "Climate Change Adaptation Strategies for Northern Communities", authors: "Young, S.; King, D.", year: 2022, type: "Report", portal_collections: "Climate Studies", search_collections: "Adaptation Research", is_overlap: true}
+                        ]
+                    },
+                    collections: {
+                        portal: [
+                            {name: "Environmental Studies", count: 245, overlap: 89, percentage: 36.3, depth: 0, library: "Portal"},
+                            {name: "Nechako Watershed Studies", count: 189, overlap: 67, percentage: 35.4, depth: 0, library: "Portal"},
+                            {name: "Indigenous Knowledge", count: 156, overlap: 34, percentage: 21.8, depth: 1, library: "Portal"},
+                            {name: "Water Management", count: 134, overlap: 78, percentage: 58.2, depth: 1, library: "Portal"},
+                            {name: "Climate Research", count: 123, overlap: 45, percentage: 36.6, depth: 0, library: "Portal"}
+                        ],
+                        search: [
+                            {name: "Research Methodologies", count: 178, overlap: 67, percentage: 37.6, depth: 0, library: "Search"},
+                            {name: "Environmental Studies", count: 145, overlap: 89, percentage: 61.4, depth: 0, library: "Search"},
+                            {name: "Data Analysis", count: 98, overlap: 23, percentage: 23.5, depth: 1, library: "Search"},
+                            {name: "Wildlife Management", count: 87, overlap: 34, percentage: 39.1, depth: 1, library: "Search"}
+                        ]
+                    },
+                    hierarchy: {}
+                };
+            }
+
+            updateStatus(message, type) {
+                const statusEl = document.getElementById('data-status');
+                statusEl.innerHTML = `<i class="bi bi-${type === 'loading' ? 'hourglass-split' : type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i> ${message}`;
+                statusEl.className = `data-status status-${type}`;
+                
+                if (type === 'success') {
+                    setTimeout(() => {
+                        statusEl.style.display = 'none';
+                    }, 3000);
+                } else if (type === 'error') {
+                    // Keep error visible longer
+                    setTimeout(() => {
+                        statusEl.style.display = 'none';
+                    }, 10000);
+                }
+            }
+
+            showDataError(error) {
+                // Add detailed error information to the loading panel
+                const loadingDiv = document.getElementById('loading');
+                loadingDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <h4><i class="bi bi-exclamation-triangle"></i> Data Loading Error</h4>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                        
+                        <h5>Troubleshooting:</h5>
+                        <ul>
+                            <li><strong>Web Server Required:</strong> You must serve this from a web server, not open the HTML file directly</li>
+                            <li><strong>Start a local server:</strong>
+                                <ul>
+                                    <li>Python: <code>python -m http.server 8000</code></li>
+                                    <li>Node.js: <code>npx serve .</code></li>
+                                    <li>PHP: <code>php -S localhost:8000</code></li>
+                                </ul>
+                            </li>
+                            <li><strong>Required files in data/ folder:</strong>
+                                <ul>
+                                    <li>analysis_results.json</li>
+                                    <li>website_hierarchy.csv</li>
+                                    <li>collection_analysis.csv</li>
+                                    <li>title_collections.csv</li>
+                                    <li>matched_records.csv</li>
+                                </ul>
+                            </li>
+                            <li><strong>Access via:</strong> http://localhost:8000 (not file://)</li>
+                        </ul>
+                        
+                        <button class="btn btn-primary mt-3" onclick="location.reload()">
+                            <i class="bi bi-arrow-clockwise"></i> Retry Loading Data
+                        </button>
+                        
+                        <button class="btn btn-secondary mt-3 ms-2" onclick="proceedWithFallback()">
+                            <i class="bi bi-play"></i> Continue with Demo Data
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // Main application
+        class ZoteroExplorer {
+            constructor() {
+                this.data = null;
+                this.currentView = 'overview';
+                this.currentSelection = null;
+                this.currentCollection = null;
+                this.currentHierarchyPath = [];
+                this.filteredArticles = [];
+                this.loader = new ZoteroDataLoader();
+            }
+
+            async initialize() {
+                // Load real data
+                this.data = await this.loader.loadData();
+                
+                // Only show content if data loaded successfully or user chose to proceed
+                if (this.data.statistics.portal_total > 100) { // Real data check
+                    this.showMainContent();
+                }
+                // If fallback data, wait for user to choose
+            }
+
+            proceedWithFallback() {
+                console.log('Proceeding with fallback data');
+                this.showMainContent();
+            }
+
+            showMainContent() {
+                // Hide loading, show content
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+                
+                // Initialize interface
+                this.setupEventListeners();
+                this.renderOverview();
+            }
+
+            setupEventListeners() {
+                document.getElementById('search-input').addEventListener('input', () => this.handleSearch());
+                document.getElementById('reset-view').addEventListener('click', () => this.resetToOverview());
+                document.getElementById('navigation-breadcrumb').addEventListener('click', (e) => this.handleBreadcrumbClick(e));
+            }
+
+            renderOverview() {
+                this.currentView = 'overview';
+                this.currentSelection = null;
+                this.updateBreadcrumb();
+                
+                this.renderStatistics();
+                this.renderVennDiagram();
+                this.resetPanels();
+            }
+
+            renderStatistics() {
+                const statsGrid = document.getElementById('stats-grid');
+                const stats = this.data.statistics;
+                
+                statsGrid.innerHTML = `
+                    <div class="stat-card" onclick="explorer.selectSection('portal')">
+                        <div class="stat-number highlight-portal">${stats.portal_total.toLocaleString()}</div>
+                        <div class="stat-label">Portal Library Total</div>
+                    </div>
+                    <div class="stat-card" onclick="explorer.selectSection('search')">
+                        <div class="stat-number highlight-search">${stats.search_total.toLocaleString()}</div>
+                        <div class="stat-label">Search Library Total</div>
+                    </div>
+                    <div class="stat-card" onclick="explorer.selectSection('overlap')">
+                        <div class="stat-number highlight-overlap">${stats.overlap.toLocaleString()}</div>
+                        <div class="stat-label">Overlapping Articles</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${(stats.portal_only + stats.search_only + stats.overlap).toLocaleString()}</div>
+                        <div class="stat-label">Total Unique Articles</div>
+                    </div>
+                `;
+            }
+
+            renderVennDiagram() {
+                const container = document.getElementById('venn-diagram');
+                container.innerHTML = '';
+                
+                const width = container.clientWidth || 600;
+                const height = 400;
+                
+                const svg = d3.select('#venn-diagram')
+                    .append('svg')
+                    .attr('width', width)
+                    .attr('height', height);
+                
+                const centerX = width / 2;
+                const centerY = height / 2;
+                
+                // Calculate proportional radii
+                const maxRadius = 120;
+                const portalRadius = Math.sqrt(this.data.statistics.portal_total / Math.PI) * 0.8;
+                const searchRadius = Math.sqrt(this.data.statistics.search_total / Math.PI) * 0.8;
+                
+                const scale = maxRadius / Math.max(portalRadius, searchRadius);
+                const finalPortalRadius = portalRadius * scale;
+                const finalSearchRadius = searchRadius * scale;
+                
+                const offset = Math.min(finalPortalRadius, finalSearchRadius) * 0.7;
+                
+                // Create gradients
+                const defs = svg.append('defs');
+                
+                const portalGradient = defs.append('radialGradient').attr('id', 'portalGradient');
+                portalGradient.append('stop').attr('offset', '0%').attr('stop-color', '#667eea');
+                portalGradient.append('stop').attr('offset', '100%').attr('stop-color', '#4c63d2');
+                
+                const searchGradient = defs.append('radialGradient').attr('id', 'searchGradient');
+                searchGradient.append('stop').attr('offset', '0%').attr('stop-color', '#764ba2');
+                searchGradient.append('stop').attr('offset', '100%').attr('stop-color', '#5a3a7a');
+                
+                const overlapGradient = defs.append('radialGradient').attr('id', 'overlapGradient');
+                overlapGradient.append('stop').attr('offset', '0%').attr('stop-color', '#28a745');
+                overlapGradient.append('stop').attr('offset', '100%').attr('stop-color', '#1e7e34');
+                
+                // Portal circle
+                svg.append('circle')
+                    .attr('cx', centerX - offset)
+                    .attr('cy', centerY)
+                    .attr('r', finalPortalRadius)
+                    .attr('fill', 'url(#portalGradient)')
+                    .attr('fill-opacity', 0.7)
+                    .attr('stroke', '#667eea')
+                    .attr('class', 'venn-circle')
+                    .attr('data-section', 'portal')
+                    .on('click', () => this.selectSection('portal'));
+                
+                // Search circle
+                svg.append('circle')
+                    .attr('cx', centerX + offset)
+                    .attr('cy', centerY)
+                    .attr('r', finalSearchRadius)
+                    .attr('fill', 'url(#searchGradient)')
+                    .attr('fill-opacity', 0.7)
+                    .attr('stroke', '#764ba2')
+                    .attr('class', 'venn-circle')
+                    .attr('data-section', 'search')
+                    .on('click', () => this.selectSection('search'));
+                
+                // Overlap area
+                const distance = offset * 2;
+                if (distance < finalPortalRadius + finalSearchRadius) {
+                    const overlapPath = this.calculateOverlapPath(
+                        centerX - offset, centerY, finalPortalRadius,
+                        centerX + offset, centerY, finalSearchRadius
+                    );
+                    
+                    svg.append('path')
+                        .attr('d', overlapPath)
+                        .attr('fill', 'url(#overlapGradient)')
+                        .attr('fill-opacity', 0.7)
+                        .attr('stroke', '#28a745')
+                        .attr('class', 'venn-circle')
+                        .attr('data-section', 'overlap')
+                        .on('click', () => this.selectSection('overlap'));
+                }
+                
+                // Labels
+                svg.append('text')
+                    .attr('x', centerX - offset - 60)
+                    .attr('y', centerY - 20)
+                    .attr('class', 'venn-label')
+                    .attr('text-anchor', 'middle')
+                    .attr('fill', 'white')
+                    .text('Portal Library');
+                
+                svg.append('text')
+                    .attr('x', centerX - offset - 60)
+                    .attr('y', centerY + 5)
+                    .attr('class', 'venn-label')
+                    .attr('text-anchor', 'middle')
+                    .attr('fill', 'white')
+                    .style('font-size', '12px')
+                    .text(`${this.data.statistics.portal_only.toLocaleString()} unique`);
+                
+                svg.append('text')
+                    .attr('x', centerX + offset + 60)
+                    .attr('y', centerY - 20)
+                    .attr('class', 'venn-label')
+                    .attr('text-anchor', 'middle')
+                    .attr('fill', 'white')
+                    .text('Search Library');
+                
+                svg.append('text')
+                    .attr('x', centerX + offset + 60)
+                    .attr('y', centerY + 5)
+                    .attr('class', 'venn-label')
+                    .attr('text-anchor', 'middle')
+                    .attr('fill', 'white')
+                    .style('font-size', '12px')
+                    .text(`${this.data.statistics.search_only.toLocaleString()} unique`);
+                
+                svg.append('text')
+                    .attr('x', centerX)
+                    .attr('y', centerY)
+                    .attr('class', 'venn-label')
+                    .attr('text-anchor', 'middle')
+                    .attr('fill', 'white')
+                    .text(`${this.data.statistics.overlap.toLocaleString()} overlap`);
+            }
+
+            calculateOverlapPath(x1, y1, r1, x2, y2, r2) {
+                const dx = x2 - x1;
+                const dy = y2 - y1;
+                const d = Math.sqrt(dx * dx + dy * dy);
+                
+                if (d >= r1 + r2) return '';
+                
+                const a = (r1 * r1 - r2 * r2 + d * d) / (2 * d);
+                const h = Math.sqrt(r1 * r1 - a * a);
+                
+                const x3 = x1 + a * (x2 - x1) / d;
+                const y3 = y1 + a * (y2 - y1) / d;
+                
+                const x4 = x3 + h * (y2 - y1) / d;
+                const y4 = y3 - h * (x2 - x1) / d;
+                
+                const x5 = x3 - h * (y2 - y1) / d;
+                const y5 = y3 + h * (x2 - x1) / d;
+                
+                return `M ${x4} ${y4} A ${r1} ${r1} 0 0 1 ${x5} ${y5} A ${r2} ${r2} 0 0 1 ${x4} ${y4} Z`;
+            }
+
+            selectSection(section) {
+                console.log('Selected section:', section);
+                
+                this.currentSelection = section;
+                this.currentView = 'section';
+                
+                // Update visual selection
+                d3.selectAll('.venn-circle').classed('selected', false);
+                d3.select(`[data-section="${section}"]`).classed('selected', true);
+                
+                // Update UI
+                document.getElementById('reset-view').style.display = 'inline-block';
+                this.updateBreadcrumb();
+                
+                // Get articles for this section
+                let articles = [];
+                let sectionTitle = '';
+                let sectionDescription = '';
+                
+                switch(section) {
+                    case 'portal':
+                        articles = this.data.articles.portal_only;
+                        sectionTitle = 'Portal Library Only';
+                        sectionDescription = `${this.data.statistics.portal_only.toLocaleString()} articles found exclusively in the Portal library`;
+                        break;
+                    case 'search':
+                        articles = this.data.articles.search_only;
+                        sectionTitle = 'Search Library Only';
+                        sectionDescription = `${this.data.statistics.search_only.toLocaleString()} articles found exclusively in the Search library`;
+                        break;
+                    case 'overlap':
+                        articles = this.data.articles.overlap;
+                        sectionTitle = 'Overlapping Articles';
+                        sectionDescription = `${this.data.statistics.overlap.toLocaleString()} articles found in both Portal and Search libraries`;
+                        break;
+                }
+                
+                this.filteredArticles = [...articles];
+                
+                // Update panels
+                this.updateSelectionInfo(sectionTitle, sectionDescription);
+                this.updateArticlePanel(sectionTitle, articles);
+                this.updateHierarchyPanel(section);
+                
+                // Show collections for this section
+                if (section !== 'overlap') {
+                    this.showCollectionBubbles(section);
+                }
+            }
+
+            updateSelectionInfo(title, description) {
+                document.getElementById('selection-title').textContent = title;
+                document.getElementById('selection-description').textContent = description;
+                document.getElementById('selection-info').style.display = 'block';
+            }
+
+            updateArticlePanel(title, articles) {
+                document.getElementById('content-title').textContent = `${title} (${articles.length.toLocaleString()} articles)`;
+                
+                const container = document.getElementById('dynamic-content');
+                container.innerHTML = '';
+                
+                if (articles.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="bi bi-file-earmark-x" style="font-size: 2em; opacity: 0.3;"></i>
+                            <p class="mt-3">No articles found in this section</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const articleList = document.createElement('div');
+                articleList.className = 'article-list';
+                
+                articles.forEach((article, index) => {
+                    const articleElement = document.createElement('div');
+                    articleElement.className = 'article-item';
+                    articleElement.innerHTML = `
+                        <div class="article-title">${article.title}</div>
+                        <div class="article-meta">
+                            <i class="bi bi-person"></i> ${article.authors || 'Unknown'} • 
+                            <i class="bi bi-calendar"></i> ${article.year || 'Unknown'} • 
+                            <i class="bi bi-file-earmark"></i> ${article.type || 'Article'}
+                        </div>
+                    `;
+                    
+                    articleElement.addEventListener('click', () => this.showArticleDetail(article));
+                    articleList.appendChild(articleElement);
+                });
+                
+                container.appendChild(articleList);
+            }
+
+            updateHierarchyPanel(section) {
+                const hierarchyTitle = document.getElementById('hierarchy-title');
+                const hierarchyContent = document.getElementById('hierarchy-content');
+                
+                if (section === 'overlap') {
+                    hierarchyTitle.textContent = 'Overlapping Collections';
+                    hierarchyContent.innerHTML = `
+                        <div class="empty-state">
+                            <i class="bi bi-intersect" style="font-size: 2em; opacity: 0.3;"></i>
+                            <p class="mt-3">Overlap articles span multiple collections</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const collections = this.data.collections[section] || [];
+                hierarchyTitle.textContent = `${section === 'portal' ? 'Portal' : 'Search'} Collections`;
+                hierarchyContent.innerHTML = '';
+                
+                if (collections.length === 0) {
+                    hierarchyContent.innerHTML = `
+                        <div class="empty-state">
+                            <i class="bi bi-folder-x" style="font-size: 2em; opacity: 0.3;"></i>
+                            <p class="mt-3">No collections found</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Group collections by depth for hierarchical display
+                const collectionsByDepth = {};
+                collections.forEach(coll => {
+                    const depth = coll.depth || 0;
+                    if (!collectionsByDepth[depth]) collectionsByDepth[depth] = [];
+                    collectionsByDepth[depth].push(coll);
+                });
+                
+                const hierarchyDiv = document.createElement('div');
+                
+                // Render collections by depth level
+                Object.keys(collectionsByDepth).sort((a, b) => parseInt(a) - parseInt(b)).forEach(depth => {
+                    const depthCollections = collectionsByDepth[depth];
+                    
+                    depthCollections.forEach(collection => {
+                        const collElement = document.createElement('div');
+                        collElement.className = 'collection-item';
+                        collElement.style.marginLeft = `${depth * 20}px`;
+                        collElement.innerHTML = `
+                            <div class="collection-name">
+                                ${'└'.repeat(depth)} ${collection.name}
+                            </div>
+                            <div class="collection-count">
+                                <i class="bi bi-file-earmark-text"></i> ${collection.count} items • 
+                                <i class="bi bi-intersect"></i> ${collection.overlap} overlap (${collection.percentage.toFixed(1)}%)
+                            </div>
+                        `;
+                        
+                        collElement.addEventListener('click', () => this.selectCollection(collection, section));
+                        hierarchyDiv.appendChild(collElement);
+                    });
+                });
+                
+                hierarchyContent.appendChild(hierarchyDiv);
+            }
+
+            showCollectionBubbles(section) {
+                document.getElementById('venn-view').style.display = 'none';
+                document.getElementById('bubble-view').style.display = 'block';
+                document.getElementById('viz-title').textContent = `${section === 'portal' ? 'Portal' : 'Search'} Library Collections`;
+                
+                const container = document.getElementById('bubble-chart');
+                container.innerHTML = '';
+                
+                const width = container.clientWidth || 600;
+                const height = 400;
+                
+                const svg = d3.select('#bubble-chart')
+                    .append('svg')
+                    .attr('width', width)
+                    .attr('height', height);
+                
+                const collections = this.data.collections[section] || [];
+                const color = section === 'portal' ? '#667eea' : '#764ba2';
+                
+                if (collections.length === 0) {
+                    svg.append('text')
+                        .attr('x', width / 2)
+                        .attr('y', height / 2)
+                        .attr('text-anchor', 'middle')
+                        .attr('fill', '#666')
+                        .text('No collections to display');
+                    return;
+                }
+                
+                const bubble = d3.pack()
+                    .size([width - 40, height - 40])
+                    .padding(5);
+                
+                const root = d3.hierarchy({
+                    children: collections.map(coll => ({
+                        ...coll,
+                        value: coll.count
+                    }))
+                }).sum(d => d.value);
+                
+                const nodes = bubble(root).descendants().slice(1);
+                
+                const bubbles = svg.selectAll('.bubble')
+                    .data(nodes)
+                    .enter()
+                    .append('g')
+                    .attr('transform', d => `translate(${d.x + 20}, ${d.y + 20})`);
+                
+                bubbles.append('circle')
+                    .attr('class', 'bubble')
+                    .attr('r', d => d.r)
+                    .attr('fill', color)
+                    .attr('fill-opacity', 0.7)
+                    .on('click', (event, d) => this.selectCollection(d.data, section));
+                
+                bubbles.filter(d => d.r > 20)
+                    .append('text')
+                    .attr('class', 'bubble-label')
+                    .attr('dy', '0.3em')
+                    .text(d => d.data.name.length > 15 ? d.data.name.substring(0, 15) + '...' : d.data.name);
+                
+                bubbles.filter(d => d.r > 30)
+                    .append('text')
+                    .attr('class', 'bubble-label')
+                    .attr('dy', '1.5em')
+                    .style('font-size', '10px')
+                    .text(d => `${d.data.count} items`);
+            }
+
+            selectCollection(collection, library) {
+                console.log('Selected collection:', collection.name);
+                
+                this.currentCollection = collection;
+                this.currentView = 'collection';
+                this.updateBreadcrumb(library, collection.name);
+                
+                // Filter articles for this collection
+                const sectionArticles = this.data.articles[library === 'portal' ? 'portal_only' : 'search_only'];
+                const collectionArticles = sectionArticles.filter(article => {
+                    const collections = library === 'portal' ? article.portal_collections : article.search_collections;
+                    return collections && collections.includes(collection.name);
+                });
+                
+                this.updateArticlePanel(`${collection.name} Collection`, collectionArticles);
+            }
+
+            showArticleDetail(article) {
+                const modalContent = document.getElementById('article-modal-content');
+                modalContent.innerHTML = `
+                    <div class="row mb-3">
+                        <div class="col-md-3"><strong>Title:</strong></div>
+                        <div class="col-md-9">${article.title}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-3"><strong>Authors:</strong></div>
+                        <div class="col-md-9">${article.authors || 'Unknown'}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-3"><strong>Year:</strong></div>
+                        <div class="col-md-9">${article.year || 'Unknown'}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-3"><strong>Type:</strong></div>
+                        <div class="col-md-9">${article.type || 'Article'}</div>
+                    </div>
+                    ${article.journal ? `
+                    <div class="row mb-3">
+                        <div class="col-md-3"><strong>Journal:</strong></div>
+                        <div class="col-md-9">${article.journal}</div>
+                    </div>
+                    ` : ''}
+                    <div class="row mb-3">
+                        <div class="col-md-3"><strong>Portal Collections:</strong></div>
+                        <div class="col-md-9">${article.portal_collections || 'None'}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-3"><strong>Search Collections:</strong></div>
+                        <div class="col-md-9">${article.search_collections || 'None'}</div>
+                    </div>
+                `;
+                
+                new bootstrap.Modal(document.getElementById('article-modal')).show();
+            }
+
+            handleSearch() {
+                const searchTerm = document.getElementById('search-input').value.toLowerCase();
+                const articles = this.currentSelection ? 
+                    this.data.articles[this.currentSelection === 'portal' ? 'portal_only' : 
+                                      this.currentSelection === 'search' ? 'search_only' : 'overlap'] : [];
+                
+                if (searchTerm === '') {
+                    this.filteredArticles = [...articles];
+                } else {
+                    this.filteredArticles = articles.filter(article =>
+                        article.title.toLowerCase().includes(searchTerm) ||
+                        (article.authors && article.authors.toLowerCase().includes(searchTerm)) ||
+                        (article.type && article.type.toLowerCase().includes(searchTerm))
+                    );
+                }
+                
+                const title = this.currentSelection === 'portal' ? 'Portal Library Only' :
+                              this.currentSelection === 'search' ? 'Search Library Only' : 'Overlapping Articles';
+                this.updateArticlePanel(`${title} (filtered)`, this.filteredArticles);
+            }
+
+            resetToOverview() {
+                this.currentView = 'overview';
+                this.currentSelection = null;
+                this.currentCollection = null;
+                
+                document.getElementById('reset-view').style.display = 'none';
+                document.getElementById('selection-info').style.display = 'none';
+                document.getElementById('venn-view').style.display = 'block';
+                document.getElementById('bubble-view').style.display = 'none';
+                document.getElementById('viz-title').textContent = 'Library Overlap Visualization';
+                document.getElementById('search-input').value = '';
+                
+                d3.selectAll('.venn-circle').classed('selected', false);
+                
+                this.resetPanels();
+                this.updateBreadcrumb();
+            }
+
+            resetPanels() {
+                document.getElementById('hierarchy-title').textContent = 'Collection Hierarchy';
+                document.getElementById('hierarchy-content').innerHTML = `
+                    <div class="empty-state">
+                        <i class="bi bi-arrow-left" style="font-size: 2em; opacity: 0.3;"></i>
+                        <p class="mt-3">Select a library section to explore collections</p>
+                    </div>
+                `;
+                
+                document.getElementById('content-title').textContent = 'Articles';
+                document.getElementById('dynamic-content').innerHTML = `
+                    <div class="empty-state">
+                        <i class="bi bi-file-earmark-text" style="font-size: 2em; opacity: 0.3;"></i>
+                        <p class="mt-3">Select a section or collection to view articles</p>
+                    </div>
+                `;
+            }
+
+            updateBreadcrumb(library = null, collection = null) {
+                const breadcrumb = document.getElementById('navigation-breadcrumb');
+                breadcrumb.innerHTML = '';
+                
+                // Overview
+                const overviewItem = document.createElement('li');
+                overviewItem.className = 'breadcrumb-item';
+                overviewItem.innerHTML = '<i class="bi bi-house"></i> Library Overview';
+                if (this.currentView === 'overview') {
+                    overviewItem.classList.add('active');
+                }
+                breadcrumb.appendChild(overviewItem);
+                
+                // Section
+                if (this.currentView === 'section' || this.currentView === 'collection') {
+                    const sectionItem = document.createElement('li');
+                    sectionItem.className = 'breadcrumb-item';
+                    sectionItem.textContent = this.currentSelection === 'portal' ? 'Portal Library' : 
+                                             this.currentSelection === 'search' ? 'Search Library' : 'Overlapping Articles';
+                    if (this.currentView === 'section') {
+                        sectionItem.classList.add('active');
+                    }
+                    breadcrumb.appendChild(sectionItem);
+                }
+                
+                // Collection
+                if (this.currentView === 'collection' && collection) {
+                    const collectionItem = document.createElement('li');
+                    collectionItem.className = 'breadcrumb-item active';
+                    collectionItem.textContent = collection;
+                    breadcrumb.appendChild(collectionItem);
+                }
+            }
+
+            handleBreadcrumbClick(event) {
+                const item = event.target.closest('.breadcrumb-item');
+                if (!item || item.classList.contains('active')) return;
+                
+                const text = item.textContent.trim();
+                
+                if (text.includes('Overview')) {
+                    this.resetToOverview();
+                } else if (text.includes('Portal') || text.includes('Search') || text.includes('Overlapping')) {
+                    if (this.currentSelection) {
+                        this.selectSection(this.currentSelection);
+                    }
+                }
+            }
+        }
+
+        // Initialize application
+        let explorer;
+        document.addEventListener('DOMContentLoaded', function() {
+            explorer = new ZoteroExplorer();
+            // Make globally available before initialization
+            window.explorer = explorer;
+            explorer.initialize();
+        });
+        
+        // Global helper functions
+        window.proceedWithFallback = function() {
+            if (window.explorer) {
+                window.explorer.proceedWithFallback();
+            }
+        };
+    </script>
+</body>
+</html>
